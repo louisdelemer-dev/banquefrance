@@ -1,61 +1,34 @@
-# Hospital Manager — Alpha 0.1
+# Hospital Manager — Alpha 0.2
 
-Simulateur personnel de direction hospitalière en France. **Démo jouable avec des données entièrement fictives.**
+Jeu personnel de simulation de gestion d'un établissement hospitalier fictif. React + TypeScript + Vite, GitHub + Netlify. Aucun serveur applicatif, aucune base de données distante. Sauvegarde locale IndexedDB, export/import JSON.
 
-## Déploiement sur GitHub + Netlify
+## Mise en ligne
 
-1. Créer un dépôt GitHub (par exemple `hospital-manager`).
-2. Décompresser le ZIP et envoyer **le contenu du dossier** à la racine du dépôt (`package.json`, `src/`, `public/`, `netlify.toml`...).
-3. Sur Netlify : **Add new project > Import an existing project > GitHub** et sélectionner le dépôt.
-4. Paramètres de construction : commande `npm run build`, dossier de publication `dist`. Ils figurent déjà dans `netlify.toml`.
-5. Déployer : Netlify installe les dépendances, compile et publie.
+Déposer **le contenu de ce dossier à la racine** du dépôt GitHub, en remplaçant les fichiers de l'alpha 0.1. Brancher le dépôt à Netlify.
+- Base directory : vide
+- Build command : `npm run build`
+- Publish directory : `dist`
 
-## Exécution en local
+Netlify utilise `netlify.toml`. Pour tester localement : `npm install` puis `npm run dev`. Pour valider : `npm run build`.
 
-Nécessite Node.js 20.19+ ou 22.12+.
+## Nouveautés alpha 0.2
 
-```bash
-npm install
-npm run dev
-```
+- Cycle automatisé des patients : admissions selon lits, personnel et stocks ; examens et sorties selon durée de séjour ; enregistrement des créances.
+- Choix d'activer ou suspendre l'automatisation sur le tableau de bord.
+- Encaissement partiel quotidien configurable et charge quotidienne d'exploitation.
+- Réaffectation des salariés entre services ; prise en compte d'un plafond de capacité en fonction des médecins et infirmiers affectés.
+- Page de rapport de gestion (activité, durée moyenne des séjours, attente, finances).
+- Avancement par 24 h ou 7 jours ; jeu toujours totalement hors serveur.
+- Compatible avec les sauvegardes v1 grâce à l'ajout de champs optionnels.
 
-Ouvrir l'adresse affichée par Vite.
+## Important — limites de cette version
 
-Pour contrôler une compilation de production :
+Simulation de gestion pédagogique : patients et diagnostics fictifs, règles d'actes et tarifs simplifiées. Pas de simulation clinique validée, ni comptabilité réglementaire M21, ni PMSI/CCAM de production. Les recettes des soins et les paiements représentent des hypothèses de jeu. Les agents sont affectés par service et non encore par tranches horaires individuelles. L'admission automatique utilise des ratios de capacité ludiques (pas des normes de soins). Les anciens séjours des sauvegardes 0.1 qui ne disposent pas d'heure d'admission continuent d'être reconnus, mais leurs durées antérieures ne peuvent pas être reconstruites.
 
-```bash
-npm run build
-npm run preview
-```
+## Sauvegardes
 
-## Fonctionnalités de l'alpha
+Sauvegarde automatique dans IndexedDB de l'origine du site et boutons manuels d'export/import. Faites régulièrement un export JSON : vider les données du navigateur peut supprimer les sauvegardes. Pour transférer votre partie vers un autre domaine Netlify, exportez puis importez votre fichier.
 
-- Horloge en heures simulées : avance manuelle ou automatique (3 vitesses).
-- Arrivées de patients fictifs, file d'attente, gravité, admissions en médecine/cardiologie/chirurgie.
-- Occupation des lits, dossiers individuels, examens simulés et sorties.
-- Valorisation **fictive et simplifiée** des séjours, créances, encaissements simulés.
-- Recrutement simplifié, masse salariale mensuelle et effectifs.
-- Achat immédiat de consommables, consommation de stocks et investissement en lits.
-- Parking avec recettes horaires et modification du tarif.
-- Événements et pannes d'imagerie.
-- Sauvegarde automatique locale avec IndexedDB, export/import JSON.
+## Tests de logique
 
-## Stockage
-
-Les données ne sont **pas hébergées sur Netlify** : le navigateur stocke les parties dans IndexedDB sur **cet appareil et ce profil navigateur**. Une suppression des données du site peut détruire la sauvegarde. Exportez régulièrement un JSON et conservez-le séparément. Le stockage local peut ne pas être disponible en navigation privée.
-
-Un seul emplacement de sauvegarde automatique est actuellement géré. L'export JSON permet d'archiver d'autres parties.
-
-## Limites et transparence
-
-Il s'agit d'une **alpha**, non d'un logiciel hospitalier opérationnel : ni codification PMSI/GHS/CCAM, ni comptabilité M21 en partie double, ni simulation réaliste des plannings de garde ou des règles de facturation françaises, ni serveur de synchronisation, ni ambulances. Les actes, chiffres et identités sont purement fictifs. Ne jamais utiliser pour des décisions médicales, administratives ou financières réelles. La génération automatique de patients ne reproduit pas encore une épidémiologie réelle. Pour la V2, priorités : horaires/compétences du personnel, moteur de séjour plus fin, plan comptable, autorisations, facturation structurée, achats fournisseurs et transports.
-
-## Structure
-
-- `src/model.ts` : règles de jeu et état de simulation.
-- `src/App.tsx` : écrans et opérations.
-- `src/storage.ts` : sauvegardes IndexedDB, export JSON.
-- `src/style.css` : interface.
-- `netlify.toml` : déploiement Netlify.
-
-Licence : usage personnel, droits réservés à l'auteur du dépôt.
+Le fichier `src/model.ts` peut être compilé seul avec TypeScript, puis testé avec Node. Test de dix jours réalisé sur le moteur (admissions, sorties, examens, valorisation, encaissements). La compilation Vite complète doit être validée par `npm run build` sur Netlify après installation des dépendances.
